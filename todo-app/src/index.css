@@ -1,7 +1,23 @@
 :root {
-	--white-color: #ffffff;
+	font-family: 'Source Sans 3', sans-serif;
+	line-height: normal;
+	font-weight: 400;
+	--white: #fff;
+	--color-bg: #181818;
+	--color-premium-btn: #312eb5;
+	--color-premium-btn-hover: #222096;
+	--border-6: 6px;
+	--border-3: 3px;
+	--color-bg-card: rgba(255, 255, 255, 0.03);
+	--color-bg-text: rgba(255, 255, 255, 0.6);
+	--color-bg-text-second: rgba(255, 255, 255, 0.4);
 }
 
-body{
-	background: #2c2525;
+a {
+	text-decoration: none;
+}
+
+body {
+	background-color: var(--color-bg);
+	box-sizing: border-box;
 }

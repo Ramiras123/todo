@@ -31,12 +31,14 @@ export const cartSlice = createSlice({
 						item.text = action.payload.text;
 						item.title = action.payload.title;
 					}
-					console.log(item);
 					return item;
 				});
 			} else {
 				state.items.push(action.payload);
 			}
+		},
+		delete: (state, action: PayloadAction<number>) => {
+			state.items = state.items.filter((item) => item.id !== action.payload);
 		}
 	}
 });

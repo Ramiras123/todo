@@ -8,3 +8,7 @@
 	flex-direction: column;
 	gap: 30px;
 }
+.body {
+	padding: 50px;
+	width: 100%;
+}
