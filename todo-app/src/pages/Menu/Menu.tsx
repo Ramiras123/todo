@@ -7,6 +7,7 @@ import { cartAction } from '../../store/cart.slice';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { CartItem } from '../../interface/cart.interface';
 import { useNavigate, useParams } from 'react-router-dom';
+import cn from 'classnames';
 
 const InitState: CartItem = {
 	title: '',
@@ -14,27 +15,73 @@ const InitState: CartItem = {
 	date: '',
 	id: -1
 };
-
+const INIT_STATE_VALID = {
+	title: true,
+	text: true,
+	date: true
+};
+const INIT_STATE_SUBMIT = false;
 export function Menu() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
 	const [value, setValue] = useState<CartItem>(InitState);
+	const [validate, setValidate] = useState(INIT_STATE_VALID);
+	const [isSubmit, setIsSubmit] = useState<boolean>(INIT_STATE_SUBMIT);
 	const items = useSelector((s: RootState) => s.cart.items);
 	const cartItem = useParams<{ id: string }>();
 	const addJournalItem = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		dispatch(
-			cartAction.add({
-				id: cartItem.id ? Number(cartItem.id) : items.length + 1,
-				title: value.title,
-				date: value.date,
-				text: value.text
-			})
-		);
+		setValidate({
+			title: value.title?.trim().length ? true : false,
+			text: value.text?.trim().length ? true : false,
+			date: value.date ? true : false
+		});
 
-		navigate('/');
-		setValue(InitState);
+		if (value.title?.trim().length && value.text?.trim().length && value.date) {
+			setIsSubmit(true);
+		}
+		// dispatch(
+		// 	cartAction.add({
+		// 		id: cartItem.id ? Number(cartItem.id) : items.length + 1,
+		// 		title: value.title,
+		// 		date: value.date,
+		// 		text: value.text
+		// 	})
+		// );
+
+		//		navigate('/');
+		//setValue(InitState);
 	};
+
+	useEffect(() => {
+		if (isSubmit) {
+			dispatch(
+				cartAction.add({
+					id: cartItem.id ? Number(cartItem.id) : items.length + 1,
+					title: value.title,
+					date: value.date,
+					text: value.text
+				})
+			);
+			setIsSubmit(INIT_STATE_SUBMIT);
+			setValidate(INIT_STATE_VALID);
+			setValue(InitState);
+		}
+	}, [isSubmit]);
+
+	useEffect(() => {
+		let timerValidState: number;
+		if (!validate.title || !validate.text || !validate.date) {
+			setIsSubmit(false);
+			timerValidState = setTimeout(() => {
+				setValidate(INIT_STATE_VALID);
+			}, 2000);
+		}
+		return () => {
+			clearTimeout(timerValidState);
+		};
+	}, [validate]);
+
 	const handleChange = (
 		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => {
@@ -59,6 +106,7 @@ export function Menu() {
 						name="title"
 						appearance="title"
 						value={value.title}
+						isValid={validate.title}
 						onChange={handleChange}
 					/>
 				</div>
@@ -71,6 +119,7 @@ export function Menu() {
 						type="date"
 						name="date"
 						id="date"
+						isValid={validate.date}
 						value={
 							value.date ? new Date(value.date).toISOString().slice(0, 10) : ''
 						}
@@ -91,7 +140,9 @@ export function Menu() {
 					rows={10}
 					value={value.text}
 					onChange={handleChange}
-					className={styles['input']}
+					className={cn(styles['input'], {
+						[styles['invalid']]: !validate.text
+					})}
 				></textarea>
 				<Button>Сохранить</Button>
 			</form>

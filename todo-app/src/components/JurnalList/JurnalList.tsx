@@ -1,8 +1,8 @@
 import styles from './JournalList.module.css';
-import CardButton from '../CardButton/CardButton';
-import JournalItem from '../Journalitem/Journalitem';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import JournalItem from '../Journalitem/Journalitem';
+import CardButton from '../CardButton/CardButton';
 
 function JournalList() {
 	const items = useSelector((s: RootState) => s.cart.items);

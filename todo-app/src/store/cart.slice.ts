@@ -31,7 +31,6 @@ export const cartSlice = createSlice({
 						item.text = action.payload.text;
 						item.title = action.payload.title;
 					}
-					console.log(item);
 					return item;
 				});
 			} else {
