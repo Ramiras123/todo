@@ -40,17 +40,6 @@ export function Menu() {
 		if (value.title?.trim().length && value.text?.trim().length && value.date) {
 			setIsSubmit(true);
 		}
-		// dispatch(
-		// 	cartAction.add({
-		// 		id: cartItem.id ? Number(cartItem.id) : items.length + 1,
-		// 		title: value.title,
-		// 		date: value.date,
-		// 		text: value.text
-		// 	})
-		// );
-
-		//		navigate('/');
-		//setValue(InitState);
 	};
 
 	useEffect(() => {
@@ -63,11 +52,15 @@ export function Menu() {
 					text: value.text
 				})
 			);
-			setIsSubmit(INIT_STATE_SUBMIT);
-			setValidate(INIT_STATE_VALID);
-			setValue(InitState);
+			navigate('/');
 		}
 	}, [isSubmit]);
+
+	useEffect(() => {
+		setValue(InitState);
+		setIsSubmit(INIT_STATE_SUBMIT);
+		setValidate(INIT_STATE_VALID);
+	}, [navigate]);
 
 	useEffect(() => {
 		let timerValidState: number;
