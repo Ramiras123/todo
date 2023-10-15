@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import { cartAction } from '../../store/cart.slice';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { CartItem } from '../../interface/cart.interface';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const InitState: CartItem = {
 	title: '',
