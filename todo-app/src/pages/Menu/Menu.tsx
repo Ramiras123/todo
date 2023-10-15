@@ -102,6 +102,23 @@ export function Menu() {
 						isValid={validate.title}
 						onChange={handleChange}
 					/>
+					{cartItem?.id && (
+						<button
+							className={styles['btn-delete']}
+							type="button"
+							onClick={() => {
+								if (cartItem.id) {
+									dispatch(cartAction.delete(+cartItem.id));
+									setIsSubmit(INIT_STATE_SUBMIT);
+									setValidate(INIT_STATE_VALID);
+									setValue(InitState);
+									navigate('/');
+								}
+							}}
+						>
+							<img src="/delete.svg" alt="Кнопка удаления" />
+						</button>
+					)}
 				</div>
 				<div className={styles['form-row']}>
 					<label htmlFor="date" className={styles['form-label']}>

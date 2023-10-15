@@ -1,3 +1,4 @@
+import { CartItemSlicer } from './cart.slice';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { loadState } from './storage';
 
@@ -36,6 +37,10 @@ export const cartSlice = createSlice({
 			} else {
 				state.items.push(action.payload);
 			}
+		},
+		delete: (state, action: PayloadAction<number>) => {
+			console.log(action.payload);
+			state.items = state.items.filter((item) => item.id !== action.payload);
 		}
 	}
 });
