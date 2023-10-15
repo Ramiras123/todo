@@ -1,4 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { loadState } from './storage';
+
+export const CART_PERSISTENT_STATE = 'cartData';
 
 export interface CartItemSlicer {
 	id: number;
@@ -11,7 +14,7 @@ export interface CartState {
 	items: CartItemSlicer[];
 }
 
-const initialState: CartState = {
+const initialState: CartState = loadState<CartState>(CART_PERSISTENT_STATE) ?? {
 	items: []
 };
 

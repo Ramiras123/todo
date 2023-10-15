@@ -16,16 +16,16 @@ function JournalList() {
 	}
 	return (
 		<div className={styles['journal-list']}>
-			<CardButton>
-				{items.map((item) => (
+			{items.map((item) => (
+				<CardButton to={`cart/${item.id}`} key={item.id}>
 					<JournalItem
 						key={item.id}
 						title={item.title}
 						text={item.text}
 						date={new Date(item.date)}
 					></JournalItem>
-				))}
-			</CardButton>
+				</CardButton>
+			))}
 		</div>
 	);
 }

@@ -4,21 +4,25 @@ import Button from '../../components/Button/Button';
 import styles from './Menu.module.css';
 import { AppDispatch, RootState } from '../../store/store';
 import { cartAction } from '../../store/cart.slice';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { CartItem } from '../../interface/cart.interface';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+
+const InitState: CartItem = {
+	title: '',
+	text: '',
+	date: '',
+	id: -1
+};
 
 export function Menu() {
+	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
-	const [value, setValue] = useState<CartItem>({
-		title: '',
-		text: '',
-		date: '',
-		id: -1
-	});
+	const [value, setValue] = useState<CartItem>(InitState);
 	const items = useSelector((s: RootState) => s.cart.items);
+	const cartItem = useParams<{ id: string }>();
 	const addJournalItem = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log(typeof value.date);
 		dispatch(
 			cartAction.add({
 				id: items.length + 1,
@@ -27,6 +31,8 @@ export function Menu() {
 				text: value.text
 			})
 		);
+		navigate('/');
+		setValue(InitState);
 	};
 	const handleChange = (
 		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -38,6 +44,12 @@ export function Menu() {
 		}));
 	};
 
+	useEffect(() => {
+		const item = items.find((item) => item.id === Number(cartItem.id));
+		if (item) {
+			setValue(item);
+		}
+	}, [cartItem, items]);
 	return (
 		<>
 			<form className={styles['journal-form']} onSubmit={addJournalItem}>
