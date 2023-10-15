@@ -1,4 +1,3 @@
-import { CartItemSlicer } from './cart.slice';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { loadState } from './storage';
 
