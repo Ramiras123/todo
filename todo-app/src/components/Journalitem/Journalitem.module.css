@@ -1,0 +1,31 @@
+.journal-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	flex-direction: column;
+	padding: 20px;
+	border-radius: var(--border-3);
+	background: var(--color-bg-card);
+}
+.journal-item__header {
+	margin: 0;
+	color: var(--white);
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 28px;
+}
+
+.journal-item__body {
+	display: flex;
+	gap: 10px;
+}
+
+.journal-item__date {
+	color: var(--color-bg-text-second);
+	font-size: 16px;
+}
+
+.journal-item__text {
+	color: var(--color-bg-text);
+	font-size: 16px;
+}
