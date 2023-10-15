@@ -25,12 +25,13 @@ export function Menu() {
 		e.preventDefault();
 		dispatch(
 			cartAction.add({
-				id: items.length + 1,
+				id: cartItem.id ? Number(cartItem.id) : items.length + 1,
 				title: value.title,
 				date: value.date,
 				text: value.text
 			})
 		);
+
 		navigate('/');
 		setValue(InitState);
 	};
@@ -43,7 +44,6 @@ export function Menu() {
 			[name]: value
 		}));
 	};
-
 	useEffect(() => {
 		const item = items.find((item) => item.id === Number(cartItem.id));
 		if (item) {

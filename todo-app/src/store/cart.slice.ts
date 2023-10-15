@@ -23,7 +23,20 @@ export const cartSlice = createSlice({
 	initialState,
 	reducers: {
 		add: (state, action: PayloadAction<CartItemSlicer>) => {
-			state.items.push(action.payload);
+			const cart = state.items.find((item) => item.id === action.payload.id);
+			if (cart) {
+				state.items.map((item) => {
+					if (action.payload.id === item.id) {
+						item.date = action.payload.date;
+						item.text = action.payload.text;
+						item.title = action.payload.title;
+					}
+					console.log(item);
+					return item;
+				});
+			} else {
+				state.items.push(action.payload);
+			}
 		}
 	}
 });
