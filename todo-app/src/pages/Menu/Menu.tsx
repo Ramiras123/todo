@@ -4,52 +4,100 @@ import Button from '../../components/Button/Button';
 import styles from './Menu.module.css';
 import { AppDispatch, RootState } from '../../store/store';
 import { cartAction } from '../../store/cart.slice';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useReducer, useRef } from 'react';
 import { CartItem } from '../../interface/cart.interface';
 import { useNavigate, useParams } from 'react-router-dom';
-
-const InitState: CartItem = {
-	title: '',
-	text: '',
-	date: '',
-	id: -1
-};
+import cn from 'classnames';
+import { INITIAL_STATE, StateCart, formReduce } from './Menu.state';
 
 export function Menu() {
-	const navigate = useNavigate();
-	const dispatch = useDispatch<AppDispatch>();
-	const [value, setValue] = useState<CartItem>(InitState);
-	const items = useSelector((s: RootState) => s.cart.items);
-	const cartItem = useParams<{ id: string }>();
-	const addJournalItem = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		dispatch(
-			cartAction.add({
-				id: cartItem.id ? Number(cartItem.id) : items.length + 1,
-				title: value.title,
-				date: value.date,
-				text: value.text
-			})
-		);
+	const [formState, dispatchForm] = useReducer(formReduce, INITIAL_STATE);
+	const selectItem = useSelector((s: RootState) => s.cart.items);
+	const { isValid, values, isFormReadyToSubmit } = formState;
+	const titleRef = useRef();
+	const dateRef = useRef();
+	const textRef = useRef();
+	const { id } = useParams<{ id: string }>();
+	// const focuseError = (isValid: IsValid) => {
+	// 	switch (true) {
+	// 		case !isValid.title:
+	// 			titleRef.current.focus();
+	// 			break;
+	// 		case !isValid.date:
+	// 			dateRef.current.focus();
+	// 			break;
+	// 		case !isValid.text:
+	// 			textRef.current.focus();
+	// 			break;
+	// 	}
+	// };
 
-		navigate('/');
-		setValue(InitState);
-	};
-	const handleChange = (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = event.target;
-		setValue((prevFormValues) => ({
-			...prevFormValues,
-			[name]: value
-		}));
-	};
 	useEffect(() => {
-		const item = items.find((item) => item.id === Number(cartItem.id));
-		if (item) {
-			setValue(item);
+		if (!selectItem) {
+			dispatchForm({ type:});
+			dispatchForm({
+				type: 'SET_VALUE',
+				payload: { userId }
+			});
 		}
-	}, [cartItem, items]);
+		dispatchForm({
+			type: 'SET_VALUE',
+			payload: { ...selectItem }
+		});
+	}, [selectItem, id]);
+
+	useEffect(() => {
+		let timerValidState: number;
+		if (!isValid.title || !isValid.text || !isValid.date) {
+			//	focuseError(isValid);
+			timerValidState = setTimeout(
+				() => dispatchForm({ type: 'RESET_VALIDITY' }),
+				2000
+			);
+		}
+		return () => {
+			clearTimeout(timerValidState);
+		};
+	}, [isValid]);
+
+	useEffect(() => {
+		if (isFormReadyToSubmit) {
+			dispatchForm({ type: 'CLEAR' });
+			dispatchForm({
+				type: 'SET_VALUE',
+				payload: { userId }
+			});
+		}
+	}, [isFormReadyToSubmit, values, onSubmit, userId]);
+
+	const addJournalItem = (
+		e: FormEvent<HTMLFormElement | HTMLTextAreaElement>
+	) => {
+		e.preventDefault();
+		dispatchForm({ type: 'SUBMIT' });
+	};
+	const onChange = (e) => {
+		dispatchForm({
+			type: 'SET_VALUE',
+			payload: { [e.target.name]: e.target.value, id }
+		});
+	};
+
+	useEffect(() => {
+		dispatchForm({ type: 'CLEAR' });
+		dispatchForm({
+			type: 'SET_VALUE',
+			payload: { id }
+		});
+	}, [id]);
+
+	const formdelete = () => {
+		dispatchForm({ type: 'CLEAR' });
+		dispatchForm({
+			type: 'SET_VALUE',
+			payload: { id }
+		});
+	};
 	return (
 		<>
 			<form className={styles['journal-form']} onSubmit={addJournalItem}>
@@ -58,8 +106,9 @@ export function Menu() {
 						type="title"
 						name="title"
 						appearance="title"
-						value={value.title}
-						onChange={handleChange}
+						value={values.title}
+						isValid={isValid.title}
+						onChange={onChange}
 					/>
 				</div>
 				<div className={styles['form-row']}>
@@ -71,10 +120,13 @@ export function Menu() {
 						type="date"
 						name="date"
 						id="date"
+						isValid={isValid.date}
 						value={
-							value.date ? new Date(value.date).toISOString().slice(0, 10) : ''
+							values.date
+								? new Date(values.date).toISOString().slice(0, 10)
+								: ''
 						}
-						onChange={handleChange}
+						onChange={onChange}
 					/>
 				</div>
 				<div className={styles['form-row']}>
@@ -89,9 +141,11 @@ export function Menu() {
 					id=""
 					cols={30}
 					rows={10}
-					value={value.text}
-					onChange={handleChange}
-					className={styles['input']}
+					className={cn(styles['input'], {
+						[styles['invalid']]: !isValid.text
+					})}
+					value={values.text}
+					onChange={onChange}
 				></textarea>
 				<Button>Сохранить</Button>
 			</form>
