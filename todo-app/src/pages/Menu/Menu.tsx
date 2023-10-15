@@ -64,13 +64,13 @@ export function Menu() {
 		const data = event.target;
 		dispatch(itemAction.createCart({ [data.name]: data.value }));
 	};
+
 	useEffect(() => {
 		const itemRes = items.find((item) => item.id === Number(cartItem.id));
 		if (itemRes) {
 			dispatch(itemAction.createCart(itemRes));
 		}
 	}, [cartItem, dispatch, items]);
-
 	return (
 		<>
 			<form className={styles['journal-form']} onSubmit={addJournalItem}>
@@ -112,7 +112,7 @@ export function Menu() {
 						value={
 							item.date ? new Date(item.date).toISOString().slice(0, 10) : ''
 						}
-						onChange={handleChange}
+						onChange={onChange}
 					/>
 				</div>
 				<div className={styles['form-row']}>
