@@ -1,0 +1,11 @@
+.journal-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.journal-list p {
+	color: var(--white);
+	margin: 0;
+	font-size: 16px;
+}

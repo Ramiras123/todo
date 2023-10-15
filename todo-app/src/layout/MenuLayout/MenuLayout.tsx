@@ -1,22 +1,19 @@
 import { Outlet } from 'react-router-dom';
-import Button from '../../components/Button/Button';
-import CardButton from '../../components/CardButton/CardButton';
-import JournalItem from '../../components/Journalitem/Journalitem';
+import styles from './MenuLayout.module.css';
+import Header from '../../components/Header/Header';
+import JournalList from '../../components/JurnalList/JurnalList';
 
 export function MenuLayout() {
 	return (
-		<>
-			<div>
-				Левая часть
-				<Button>Выход</Button>
-				<CardButton>
-					<JournalItem title={'da'} date={new Date()} text={'das'} />
-				</CardButton>
+		<div className={styles['app']}>
+			<div className={styles['left-panel']}>
+				<Header />
+				<JournalList></JournalList>
 			</div>
 			<div>
 				<Outlet />
 			</div>
-		</>
+		</div>
 	);
 }
 
